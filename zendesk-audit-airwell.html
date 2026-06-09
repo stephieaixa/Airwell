@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Zendesk — Airwell</title>
+<style>
+  :root {
+    --brand-dark:    #200B3E;
+    --brand-purple:  #3D1B6E;
+    --brand-accent:  #8B5CF6;
+    --brand-light:   #EDE9FE;
+    --red:           #EF4444;
+    --orange:        #F97316;
+    --yellow:        #EAB308;
+    --green:         #22C55E;
+    --blue:          #3B82F6;
+    --text-dark:     #1E1B4B;
+    --text-mid:      #4B5563;
+    --text-light:    #F9FAFB;
+    --bg:            #F5F3FF;
+    --nav-h:         56px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0F0A1E;
+    color: var(--text-dark);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .omycare-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .omycare-logo img { height: 30px; width: auto; }
+
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    background: rgba(15, 10, 30, 0.92);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(139, 92, 246, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 200;
+  }
+  .nav-bar .nav-btn {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    color: white;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-bar .nav-btn:hover {
+    background: rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 0.7);
+    transform: scale(1.08);
+  }
+  .nav-bar .nav-counter {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 52px;
+    text-align: center;
+  }
+  .nav-bar .dots { display: flex; gap: 6px; align-items: center; }
+  .nav-bar .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .nav-bar .dot.active {
+    background: var(--brand-accent);
+    width: 22px;
+    border-radius: 3px;
+  }
+  .nav-bar .nav-hint {
+    position: absolute;
+    right: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    display: flex; gap: 6px; align-items: center;
+  }
+
+  .deck {
+    width: 100vw;
+    height: calc(100vh - var(--nav-h));
+    position: relative;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* SLIDE COVER */
+  .slide-cover {
+    background: linear-gradient(135deg, #0F0A1E 0%, #200B3E 50%, #3D1B6E 100%);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 48px 60px;
+    position: absolute;
+  }
+  .slide-cover .cover-logo { position: absolute; top: 24px; left: 32px; }
+  .slide-cover .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    color: #C4B5FD;
+    padding: 6px 16px; border-radius: 50px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .slide-cover h1 { font-size: 50px; font-weight: 800; color: white; line-height: 1.1; margin-bottom: 14px; }
+  .slide-cover h1 span { color: #A78BFA; }
+  .slide-cover .subtitle { font-size: 18px; color: rgba(255,255,255,0.55); margin-bottom: 44px; }
+  .cover-stats { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; }
+  .cover-stat .num { font-size: 34px; font-weight: 800; color: #A78BFA; display: block; }
+  .cover-stat .lbl { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+  .divider-v { width: 1px; background: rgba(255,255,255,0.12); align-self: stretch; }
+
+  /* SLIDE HEADER */
+  .slide-header {
+    background: var(--brand-dark);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  }
+  .slide-header .header-left { display: flex; align-items: center; gap: 20px; }
+  .slide-header h2 { color: white; font-size: 20px; font-weight: 700; }
+  .slide-header .tag {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    color: #A78BFA; background: rgba(139,92,246,0.15);
+    padding: 4px 12px; border-radius: 50px; border: 1px solid rgba(139,92,246,0.3);
+  }
+
+  /* SLIDE BODY */
+  .slide-body { flex: 1; background: var(--bg); padding: 28px 40px; overflow: hidden; }
+
+  /* COMPONENTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+
+  .card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06);
+  }
+  .card h3 { font-size: 12px; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .card .big-num { font-size: 38px; font-weight: 800; color: var(--text-dark); line-height: 1; }
+  .card .sub { font-size: 12px; color: var(--text-mid); margin-top: 4px; }
+
+  .badge-red    { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+  .badge-orange { background: #FED7AA; color: #92400E; border: 1px solid #FCA5A5; }
+  .badge-yellow { background: #FEF3C7; color: #78350F; border: 1px solid #FCD34D; }
+  .badge-green  { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+  .badge-blue   { background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD; }
+  .badge-purple { background: #EDE9FE; color: #4C1D95; border: 1px solid #C4B5FD; }
+  .badge-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 50px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+
+  .priority-table { width: 100%; border-collapse: collapse; }
+  .priority-table th { text-align: left; padding: 9px 13px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-mid); border-bottom: 2px solid #E5E7EB; }
+  .priority-table td { padding: 10px 13px; font-size: 13px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; vertical-align: top; }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .priority-table tr:hover td { background: #FAFAFA; }
+
+  .alert { display: flex; gap: 13px; padding: 13px 16px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; align-items: flex-start; }
+  .alert-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+  .alert strong { display: block; font-weight: 700; margin-bottom: 2px; font-size: 13px; }
+  .alert-red    { background: #FEF2F2; border-left: 4px solid var(--red);    color: #7F1D1D; }
+  .alert-orange { background: #FFF7ED; border-left: 4px solid var(--orange); color: #7C2D12; }
+  .alert-green  { background: #F0FDF4; border-left: 4px solid var(--green);  color: #14532D; }
+  .alert-blue   { background: #EFF6FF; border-left: 4px solid var(--blue);   color: #1E3A8A; }
+
+  .progress-bar { height: 7px; background: #E5E7EB; border-radius: 50px; overflow: hidden; margin-top: 8px; }
+  .progress-bar .fill { height: 100%; border-radius: 50px; }
+  .fill-green  { background: var(--green); }
+  .fill-orange { background: var(--orange); }
+  .fill-red    { background: var(--red); }
+  .fill-purple { background: var(--brand-accent); }
+
+  .checklist { list-style: none; }
+  .checklist li { display: flex; gap: 9px; padding: 7px 0; font-size: 13px; color: var(--text-dark); border-bottom: 1px solid #F3F4F6; align-items: flex-start; }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .ico { font-size: 15px; flex-shrink: 0; }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 14px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 38px; flex-shrink: 0; }
+  .tl-dot { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; color: white; }
+  .tl-line { width: 2px; flex: 1; background: #E5E7EB; margin: 4px 0; min-height: 16px; }
+  .tl-content { flex: 1; padding-bottom: 18px; }
+  .tl-content h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+  .tl-content p { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+
+  .flow { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+  .flow-step { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 7px 12px; font-size: 12px; font-weight: 600; color: var(--text-dark); white-space: nowrap; }
+  .flow-arrow { color: var(--text-mid); font-size: 15px; }
+
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-accent); margin-bottom: 10px; margin-top: 18px; }
+  .section-title:first-child { margin-top: 0; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .compare-col h4 { font-size: 13px; font-weight: 700; padding: 7px 12px; border-radius: 8px; margin-bottom: 8px; }
+  .compare-ok h4  { background: #DCFCE7; color: #166534; }
+  .compare-bad h4 { background: #FEE2E2; color: #991B1B; }
+
+  .stat-row { display: flex; gap: 14px; margin-bottom: 18px; }
+  .stat-mini { flex: 1; background: white; border-radius: 10px; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.06); text-align: center; }
+  .stat-mini .n { font-size: 26px; font-weight: 800; color: var(--brand-dark); }
+  .stat-mini .l { font-size: 11px; color: var(--text-mid); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  .slide-body.compact { padding: 14px 24px; font-size: 11px; }
+  .slide-body.compact .section-title   { font-size: 10px; margin-top: 10px; margin-bottom: 6px; }
+  .slide-body.compact .priority-table th { padding: 4px 8px; font-size: 10px; }
+  .slide-body.compact .priority-table td { padding: 4px 8px; font-size: 11px; }
+  .slide-body.compact .alert            { padding: 8px 12px; font-size: 11px; margin-bottom: 6px; }
+  .slide-body.compact .alert strong     { font-size: 11px; }
+  .slide-body.compact .alert-icon       { font-size: 14px; }
+  .slide-body.compact .stat-row         { margin-bottom: 10px; gap: 10px; }
+  .slide-body.compact .stat-mini        { padding: 8px 10px; }
+  .slide-body.compact .stat-mini .n     { font-size: 20px; }
+  .slide-body.compact .stat-mini .l     { font-size: 9px; }
+  .slide-body.compact .checklist li     { padding: 4px 0; font-size: 11px; }
+  .slide-body.compact .checklist .ico   { font-size: 13px; }
+  .slide-body.compact .card             { padding: 10px 14px; }
+  .slide-body.compact .card h3          { font-size: 10px; margin-bottom: 4px; }
+  .slide-body.compact .card .big-num    { font-size: 28px; }
+  .slide-body.compact .progress-bar     { height: 5px; margin-top: 5px; }
+  .slide-body.compact .badge-pill       { font-size: 9px; padding: 2px 7px; }
+  .slide-body.compact .grid-2           { gap: 12px; }
+  .slide-body.compact .grid-3           { gap: 12px; }
+  .slide-body.compact p                 { font-size: 11px; line-height: 1.4; }
+  .slide-body.compact h4                { font-size: 12px; }
+
+  @media (max-width: 768px) {
+    :root { --nav-h: 52px; }
+    .slide-body { overflow-y: auto !important; padding: 14px 16px calc(var(--nav-h) + 14px) !important; font-size: 12px; overscroll-behavior: contain; }
+    .grid-2, .grid-3, .compare, [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .slide-cover { padding: 24px 20px; overflow-y: auto; justify-content: flex-start; padding-top: 60px; padding-bottom: calc(var(--nav-h) + 24px); }
+    .slide-cover h1 { font-size: 28px !important; }
+    .slide-cover .subtitle { font-size: 14px !important; margin-bottom: 20px !important; }
+    .cover-stats { gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .cover-stat { flex: 0 0 calc(33% - 8px); text-align: center; }
+    .cover-stat .num { font-size: 24px !important; }
+    .cover-logo img { height: 24px !important; }
+    .divider-v { display: none; }
+    .slide-header { padding: 10px 16px; }
+    .slide-header h2 { font-size: 14px; }
+    .slide-header .tag { display: none; }
+    .omycare-logo img { height: 22px !important; }
+    .header-left { gap: 10px; }
+    .card { padding: 12px; }
+    .card .big-num { font-size: 28px; }
+    .priority-table th, .priority-table td { padding: 6px 8px; font-size: 11px; }
+    .alert { padding: 10px 12px; font-size: 11px; margin-bottom: 8px; }
+    .alert strong { font-size: 11px; }
+    .checklist li { font-size: 12px; padding: 5px 0; }
+    .stat-row { flex-wrap: wrap; }
+    .stat-mini { min-width: 42%; }
+    .stat-mini .n { font-size: 20px; }
+    .nav-bar { gap: 12px; }
+    .nav-bar .nav-btn { width: 32px; height: 32px; font-size: 14px; }
+    .nav-bar .nav-counter { font-size: 12px; min-width: 40px; }
+    .nav-bar .dot { width: 5px; height: 5px; }
+    .nav-bar .dot.active { width: 16px; }
+    .plan-grid { grid-template-columns: 1fr !important; }
+    .slide-body.compact { padding: 12px 14px calc(var(--nav-h) + 12px) !important; font-size: 11px; }
+    .slide-11-body > div { height: auto !important; }
+    .slide-cover .cover-logo { position: static; margin-bottom: 20px; }
+    .slide-merci .merci-info-row { flex-direction: column !important; align-items: center; gap: 16px !important; }
+    .slide-merci .merci-divider  { display: none !important; }
+    .slide-merci h1              { font-size: 32px !important; margin-bottom: 8px !important; }
+    .slide-merci .subtitle       { margin-bottom: 20px !important; font-size: 13px !important; }
+  }
+  @media (max-width: 480px) {
+    .slide-cover h1 { font-size: 22px !important; }
+    .slide-header h2 { font-size: 13px; }
+    .priority-table th { display: none; }
+    .priority-table td:first-child { font-weight: 600; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <button class="nav-btn" onclick="prev()" title="Precedent">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span class="nav-counter" id="counter">1 / 12</span>
+  <button class="nav-btn" onclick="next()" title="Suivant">&#8594;</button>
+  <div class="nav-hint"><span class="kbd">&#8592;</span><span class="kbd">&#8594;</span></div>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- SLIDE 1 — COUVERTURE -->
+<div class="slide slide-cover active">
+  <div class="cover-logo omycare-logo">
+    <img src="../Omycarelogo.png" alt="OmyCare" style="height:34px">
+  </div>
+  <div class="badge">&#128269; Audit Complet &middot; Juin 2026</div>
+  <h1>Audit Zendesk<br><span>Airwell</span></h1>
+  <p class="subtitle">airwellhelp.zendesk.com &rarr; help.airwell.com</p>
+  <div class="cover-stats">
+    <div class="cover-stat"><span class="num">9 429</span><span class="lbl">Tickets total</span></div>
+    <div class="divider-v"></div>
+    <div class="cover-stat"><span class="num">62</span><span class="lbl">Triggers</span></div>
+    <div class="divider-v"></div>
+    <div class="cover-stat"><span class="num">144</span><span class="lbl">Macros</span></div>
+    <div class="divider-v"></div>
+    <div class="cover-stat"><span class="num">31</span><span class="lbl">Agents</span></div>
+    <div class="divider-v"></div>
+    <div class="cover-stat"><span class="num">10</span><span class="lbl">Formulaires</span></div>
+  </div>
+</div>
+
+<!-- SLIDE 2 — VUE D'ENSEMBLE -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128202; Vue d'ensemble du compte</h2>
+    </div>
+    <span class="tag">Diagnostic global</span>
+  </div>
+  <div class="slide-body compact">
+    <div class="grid-3" style="margin-bottom:18px">
+      <div class="card">
+        <h3>Triggers actifs</h3>
+        <div class="big-num" style="color:#3B82F6">51</div>
+        <p class="sub">11 inactifs non supprim&eacute;s</p>
+        <div class="progress-bar"><div class="fill fill-purple" style="width:82%"></div></div>
+      </div>
+      <div class="card">
+        <h3>Macros (total)</h3>
+        <div class="big-num" style="color:#22C55E">144</div>
+        <p class="sub">Tr&egrave;s bien organis&eacute;es en dossiers "::"</p>
+        <div class="progress-bar"><div class="fill fill-green" style="width:86%"></div></div>
+      </div>
+      <div class="card">
+        <h3>Articles Help Center</h3>
+        <div class="big-num" style="color:#EF4444">8</div>
+        <p class="sub">Tr&egrave;s insuffisant — 0 label configur&eacute;</p>
+        <div class="progress-bar"><div class="fill fill-red" style="width:5%"></div></div>
+      </div>
+    </div>
+    <div class="compare">
+      <div class="compare-col compare-ok">
+        <h4>&#10003; Points forts</h4>
+        <ul class="checklist">
+          <li><span class="ico">&#128203;</span>Macros tr&egrave;s bien structur&eacute;es avec pr&eacute;fixe "::" (AIRHOME, SAV FR, SAV Italie, MMH, etc.)</li>
+          <li><span class="ico">&#127981;</span>10 formulaires de ticket sp&eacute;cialis&eacute;s par besoin (FR + EN)</li>
+          <li><span class="ico">&#128101;</span>17 groupes bien d&eacute;finis par service et zone g&eacute;ographique</li>
+          <li><span class="ico">&#128247;</span>Vues actives avec emojis pour identification rapide</li>
+          <li><span class="ico">&#128336;</span>Horaires d'ouverture configur&eacute;s (Lu-Ve 8h-18h)</li>
+          <li><span class="ico">&#129302;</span>Agent IA pr&eacute;sent dans le compte (potentiel &agrave; exploiter)</li>
+          <li><span class="ico">&#127760;</span>Support multilingue : FR + EN natif</li>
+        </ul>
+      </div>
+      <div class="compare-col compare-bad">
+        <h4>&#9888; Points &agrave; corriger</h4>
+        <ul class="checklist">
+          <li><span class="ico">&#128308;</span><strong>Aucune politique SLA configur&eacute;e</strong> — pas de mesure des d&eacute;lais de r&eacute;ponse</li>
+          <li><span class="ico">&#128308;</span>CSAT d&eacute;sactiv&eacute;e — 0 notation collect&eacute;e depuis la cr&eacute;ation du compte</li>
+          <li><span class="ico">&#128308;</span>Relances "pending" d&eacute;sactiv&eacute;es — tickets orphelins sans suivi</li>
+          <li><span class="ico">&#128308;</span>Help Center trop l&eacute;ger : 8 articles, aucun label (IA inut ilisable)</li>
+          <li><span class="ico">&#128308;</span>Vues sans dossiers — liste plate de 24 vues, pas de structure hiérarchique</li>
+          <li><span class="ico">&#128308;</span>156 champs de ticket — nombreux doublons FR/EN, source de confusion</li>
+          <li><span class="ico">&#128993;</span>12 vues inactives (anciennes vues Zendesk) encombrent l'interface</li>
+          <li><span class="ico">&#128993;</span>Triggers en doublons : 3 versions du m&ecirc;me trigger "Notifier le demandeur"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 — URGENCES CRITIQUES -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128308; Les 4 urgences critiques</h2>
+    </div>
+    <span class="tag">Impact direct sur les op&eacute;rations</span>
+  </div>
+  <div class="slide-body">
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C1 &middot; Aucune politique SLA configur&eacute;e</strong>
+        L'endpoint SLA renvoie une erreur — aucune politique n'existe sur ce compte. Il est impossible de mesurer les d&eacute;lais de premi&egrave;re r&eacute;ponse, de r&eacute;solution ou de r&eacute;ponse suivante. Les agents travaillent sans objectifs de performance d&eacute;finis. C'est la fondation manquante de tout service client structur&eacute;.
+      </div>
+    </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C2 &middot; CSAT compl&egrave;tement d&eacute;sactiv&eacute;e</strong>
+        Z&eacute;ro notation CSAT collect&eacute;e depuis la cr&eacute;ation du compte (novembre 2023). Aucune donn&eacute;e de satisfaction client disponible. Impossible d'&eacute;valuer la qualit&eacute; du service, d'identifier les agents ou les sujets probl&eacute;matiques, ni de mettre en place une boucle de feedback.
+      </div>
+    </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C3 &middot; Les 2 automations de relance "pending" sont inactives</strong>
+        "Notification de demande en attente depuis 24 heures" et "depuis 5 jours" sont toutes les deux &eacute;teintes. Les tickets en attente de r&eacute;ponse client ne g&eacute;n&egrave;rent aucune relance automatique &rarr; tickets orphelins, d&eacute;lais non ma&icirc;tris&eacute;s, clients sans nouvelles.
+      </div>
+    </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C4 &middot; Help Center insuffisant &mdash; Agent IA inutilisable</strong>
+        Seulement 8 articles dans le Help Center, et <em>aucun d'entre eux ne poss&egrave;de de label</em>. Les labels sont indispensables pour que l'agent IA (d&eacute;j&agrave; pr&eacute;sent dans le compte) puisse sugg&eacute;rer des articles et d&eacute;fletter des tickets. En l'&eacute;tat, le bot ne peut rien faire.
+      </div>
+    </div>
+    <div class="alert alert-orange">
+      <span class="alert-icon">&#128993;</span>
+      <div>
+        <strong>C5 &middot; Vues sans organisation en dossiers</strong>
+        24 vues actives en liste plate, sans aucune structure hiérarchique de type "::" ou sous-dossiers. À mesure que l'équipe grandit et que de nouvelles vues s'ajoutent, la navigation devient difficile. Les vues devraient être regroupées par zone (SAV FR, Export, Allemagne, Italie, Applications...).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 — TRIGGERS & AUTOMATIONS -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#9889; Triggers &amp; Automations</h2>
+    </div>
+    <span class="tag">62 triggers &middot; 4 automations</span>
+  </div>
+  <div class="slide-body compact">
+    <div class="stat-row">
+      <div class="stat-mini"><div class="n" style="color:var(--green)">51</div><div class="l">Triggers actifs</div></div>
+      <div class="stat-mini"><div class="n" style="color:var(--text-mid)">11</div><div class="l">Triggers inactifs</div></div>
+      <div class="stat-mini"><div class="n" style="color:var(--green)">2</div><div class="l">Automations actives</div></div>
+      <div class="stat-mini"><div class="n" style="color:var(--red)">2</div><div class="l">Automations inactives</div></div>
+    </div>
+    <p class="section-title">Etat des automations</p>
+    <table class="priority-table">
+      <thead><tr><th>Automation</th><th>Statut</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Clore le ticket 15 jours apr&egrave;s r&eacute;solution</td><td><span class="badge-pill badge-green">&#10003; Actif</span></td><td style="color:var(--text-mid)">—</td></tr>
+        <tr><td>SP vers SP</td><td><span class="badge-pill badge-green">&#10003; Actif</span></td><td style="color:var(--text-mid)">Routage interne SP</td></tr>
+        <tr><td>Notification de demande en attente depuis 24 heures</td><td><span class="badge-pill badge-red">&#10007; Inactif</span></td><td style="color:var(--red);font-size:12px">PRIORIT&Eacute; 1 — &agrave; activer imm&eacute;diatement</td></tr>
+        <tr><td>Notification de demande en attente depuis 5 jours</td><td><span class="badge-pill badge-red">&#10007; Inactif</span></td><td style="color:var(--orange);font-size:12px">&Agrave; activer apr&egrave;s la relance 24h</td></tr>
+      </tbody>
+    </table>
+    <p class="section-title" style="margin-top:10px">Probl&egrave;mes identifies dans les triggers</p>
+    <div class="alert alert-orange" style="margin-bottom:7px">
+      <span class="alert-icon">&#128993;</span>
+      <div><strong>Doublons de triggers "Notifier le demandeur"</strong> — Ce trigger existe en 3 versions actives simultan&eacute;ment (&#127984; g&eacute;n&eacute;rique, &#9992; pour Export/DE, &#9992;SP pour les pi&egrave;ces). Risque d'emails en double selon la marque ou le canal d'entr&eacute;e. &Agrave; cartographier et consolider.</div>
+    </div>
+    <div class="alert alert-orange" style="margin-bottom:7px">
+      <span class="alert-icon">&#128993;</span>
+      <div><strong>Triggers de notification Zendesk par d&eacute;faut d&eacute;sactiv&eacute;s</strong> — Les triggers syst&egrave;me (notifier assigné, notifier groupe, notifier demandeur CC) sont tous inactifs, remplac&eacute;s par des triggers custom par service. Cette approche est plus complexe &agrave; maintenir — v&eacute;rifier la couverture compl&egrave;te.</div>
+    </div>
+    <div class="alert alert-blue" style="margin-bottom:0">
+      <span class="alert-icon">&#128161;</span>
+      <div><strong>11 triggers inactifs &agrave; examiner</strong> — Dont "Formulaire SOFINCO", "Statut nouveau ticket MMH" et "Re&ccedil;u &agrave; Help Center". Certains peuvent &ecirc;tre obsol&egrave;tes et encombrent la liste.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5 — SLA & HORAIRES -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#8987; SLA &amp; Horaires d'ouverture</h2>
+    </div>
+    <span class="tag">SLA absent &middot; horaires OK</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div>
+        <p class="section-title">Situation actuelle des SLA</p>
+        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #EF4444;border-radius:10px;padding:16px 18px;margin-bottom:14px">
+          <div style="font-size:15px;font-weight:800;color:#991B1B;margin-bottom:8px">&#128308; Aucune politique SLA configur&eacute;e</div>
+          <p style="font-size:13px;color:#7F1D1D;line-height:1.6">Il n'existe <strong>aucune politique SLA</strong> sur ce compte Zendesk. L'API SLA renvoie une erreur "Not found". Sans SLA :</p>
+          <ul style="font-size:12px;color:#7F1D1D;line-height:1.8;padding-left:16px;margin-top:8px">
+            <li>Impossible de mesurer le <strong>temps de premi&egrave;re r&eacute;ponse</strong></li>
+            <li>Pas de suivi du <strong>temps de r&eacute;solution</strong></li>
+            <li>Aucune alerte en cas de d&eacute;passement</li>
+            <li>Aucun reporting de performance SLA dans Explore</li>
+            <li>Les agents n'ont aucun objectif de d&eacute;lai visible</li>
+          </ul>
+        </div>
+        <p class="section-title">SLA recommand&eacute; (premi&egrave;re &eacute;tape)</p>
+        <table class="priority-table">
+          <thead><tr><th>Priorit&eacute;</th><th>First Reply</th><th>R&eacute;solution</th></tr></thead>
+          <tbody>
+            <tr><td>&#128308; Urgent</td><td style="color:var(--green);font-weight:600">2h ouvr&eacute;es</td><td style="color:var(--green);font-weight:600">8h ouvr&eacute;es</td></tr>
+            <tr><td>&#128993; High</td><td style="color:var(--green);font-weight:600">4h ouvr&eacute;es</td><td style="color:var(--green);font-weight:600">24h ouvr&eacute;es</td></tr>
+            <tr><td>&#128994; Normal</td><td style="color:var(--green);font-weight:600">8h ouvr&eacute;es</td><td style="color:var(--green);font-weight:600">48h ouvr&eacute;es</td></tr>
+            <tr><td>&#9899; Low</td><td style="color:var(--green);font-weight:600">24h ouvr&eacute;es</td><td style="color:var(--green);font-weight:600">5j ouvr&eacute;s</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="section-title">Horaires d'ouverture — "Emploi du temps Service Client"</p>
+        <table class="priority-table" style="margin-bottom:12px">
+          <thead><tr><th>Jour</th><th>Plage configur&eacute;e</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td>Lundi</td><td>08h00 - 18h00</td><td><span class="badge-pill badge-green">OK</span></td></tr>
+            <tr><td>Mardi</td><td>08h00 - 18h00</td><td><span class="badge-pill badge-green">OK</span></td></tr>
+            <tr><td>Mercredi</td><td>08h00 - 18h00</td><td><span class="badge-pill badge-green">OK</span></td></tr>
+            <tr><td>Jeudi</td><td>08h00 - 18h00</td><td><span class="badge-pill badge-green">OK</span></td></tr>
+            <tr><td>Vendredi</td><td>08h00 - 18h00</td><td><span class="badge-pill badge-green">OK</span></td></tr>
+            <tr><td>Samedi</td><td style="color:var(--text-mid)">Ferm&eacute;</td><td><span class="badge-pill badge-purple">Normal</span></td></tr>
+            <tr><td>Dimanche</td><td style="color:var(--text-mid)">Ferm&eacute;</td><td><span class="badge-pill badge-purple">Normal</span></td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-green" style="margin-bottom:10px">
+          <span class="alert-icon">&#9989;</span>
+          <div><strong>Horaires correctement configur&eacute;s</strong> — Lundi au vendredi 8h-18h. Le fuseau horaire est bien d&eacute;fini sur Paris.</div>
+        </div>
+        <div class="alert alert-blue">
+          <span class="alert-icon">&#128161;</span>
+          <div><strong>Prochaine &eacute;tape</strong> — Cr&eacute;er les politiques SLA en heures ouvr&eacute;es et les lier &agrave; l'horaire d&eacute;j&agrave; configur&eacute;. Les violations seront ainsi calcul&eacute;es uniquement sur les heures de bureau.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 — VUES & ORGANISATION -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128065; Vues &amp; Organisation</h2>
+    </div>
+    <span class="tag">36 vues &middot; 24 actives &middot; sans dossiers</span>
+  </div>
+  <div class="slide-body compact" style="padding:14px 28px">
+    <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px;height:100%">
+      <div>
+        <p class="section-title" style="margin-top:0">Vues actives (24) — organis&eacute;es par th&egrave;me mais sans dossier</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">G&eacute;n&eacute;riques</div>
+            <ul style="list-style:none;font-size:11px;color:var(--text-dark)">
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128293;|Tous les tickets en cours</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128282;|Tous les R&eacute;solus</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128995;|Nouveaux</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128308;|Ouverts</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128309;|En attente</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#127806;|Help Center</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128370;|Demandes de rappels</li>
+              <li style="padding:3px 0">&#127925;|D&eacute;p&ocirc;t de messages vocaux</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">Par service / zone</div>
+            <ul style="list-style:none;font-size:11px;color:var(--text-dark)">
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128295;|SAV France</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#127829;|SAV Italie</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#129132;|SAV Allemagne</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#127940;|SAV Export</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#127780;|Ma Maison Hybride</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128247;|Interventions France</li>
+              <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#128241;|Applications Mobiles</li>
+              <li style="padding:3px 0">&#128226;|R&eacute;seaux Sociaux</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:#FEF3C7;border-left:3px solid var(--yellow);border-radius:6px;padding:8px 10px">
+          <span style="font-size:11px;color:#78350F">&#9888; Ces vues fonctionnent bien individuellement, mais sans organisation en dossiers (type "SAV :: SAV France"), la navigation dans une liste de 24+ vues devient difficile pour les nouveaux agents.</span>
+        </div>
+      </div>
+      <div>
+        <p class="section-title" style="margin-top:0;color:var(--red)">12 vues inactives &agrave; nettoyer</p>
+        <div style="background:white;border-radius:10px;border:1px solid #E5E7EB;padding:10px">
+          <ul style="list-style:none;font-size:11px;color:var(--text-mid)">
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets non affect&eacute;s (d&eacute;faut Zendesk)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tous les tickets non r&eacute;solus (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets mis &agrave; jour r&eacute;cemment (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">T&acirc;ches actuelles (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">T&acirc;ches en retard (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Nouveaux tickets dans vos groupes (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets en attente (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets r&eacute;solus r&eacute;cemment (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets non r&eacute;solus groupes (d&eacute;faut)</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">&#127867;|Service Clients DE</li>
+            <li style="padding:3px 0;border-bottom:1px solid #F3F4F6">Tickets avec approbations</li>
+            <li style="padding:3px 0">Vos tickets avec approbation demand&eacute;e</li>
+          </ul>
+        </div>
+        <div style="margin-top:10px;background:#EFF6FF;border-left:3px solid var(--blue);border-radius:6px;padding:8px 10px">
+          <span style="font-size:11px;color:#1E3A8A">&#128161; Recommandation : supprimer les vues Zendesk par d&eacute;faut devenues inutiles et cr&eacute;er des groupes de vues avec le pr&eacute;fixe "::" pour structurer la navigation.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 — FORMULAIRES & CHAMPS -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#127981; Formulaires &amp; Champs de ticket</h2>
+    </div>
+    <span class="tag">10 formulaires &middot; 156 champs</span>
+  </div>
+  <div class="slide-body compact" style="padding:14px 28px">
+    <div class="grid-2">
+      <div>
+        <p class="section-title" style="margin-top:0">Formulaires de ticket (10)</p>
+        <table class="priority-table" style="font-size:11px">
+          <thead><tr><th>Formulaire</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Formulaire de ticket SVI - Mails</strong></td><td><span class="badge-pill badge-purple" style="font-size:9px">D&eacute;faut</span></td></tr>
+            <tr><td>Enregistrer vos produits (garantie 5 ans)</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Ticket contact - Assistance technique</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Support Applications</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>RS (R&eacute;seaux Sociaux)</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Ticket contact - Demande commerciale</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Formulaire enregistrement produits EN</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Formulaire assistance technique EN</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr><td>Envoyer une demande Sofinco</td><td><span class="badge-pill badge-green" style="font-size:9px">&#10003; Actif</span></td></tr>
+            <tr style="background:#FEF2F2"><td>Formulaire de ticket SVI - Copie <span style="color:var(--red);font-size:10px">&#9888;</span></td><td><span class="badge-pill badge-red" style="font-size:9px">&#10007; Inactif</span></td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-green" style="margin-top:8px">
+          <span class="alert-icon">&#9989;</span>
+          <div style="font-size:11px">9 formulaires actifs sp&eacute;cialis&eacute;s par canal et type de demande &mdash; bonne pratique. 1 formulaire inactif &agrave; archiver.</div>
+        </div>
+      </div>
+      <div>
+        <p class="section-title" style="margin-top:0">156 champs de ticket &mdash; Anomalie critique</p>
+        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #EF4444;border-radius:10px;padding:12px 14px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#991B1B;margin-bottom:6px">&#128308; Champs dupliqu&eacute;s FR/EN</div>
+          <p style="font-size:11px;color:#7F1D1D;line-height:1.5">Le m&ecirc;me champ existe en deux versions — une fran&ccedil;aise et une anglaise — pour la quasi-totalit&eacute; des informations produit. Exemple :</p>
+          <div style="background:white;border-radius:6px;padding:8px 10px;margin-top:7px;font-size:11px">
+            <div style="color:#374151;line-height:1.9">
+              <span style="color:var(--red)">&#10007;</span> N&deg; de S&eacute;rie appareil 1 &agrave; 20 (FR) = 20 champs<br>
+              <span style="color:var(--red)">&#10007;</span> Device serial no. 1 to 20 (EN) = 20 champs<br>
+              <span style="color:var(--orange)">&#9654;</span> Total pour les seuls num&eacute;ros de s&eacute;rie = <strong>40 champs</strong><br>
+              <span style="color:var(--orange)">&#9654;</span> M&ecirc;me pattern pour adresse, cp, pr&eacute;nom, nom...
+            </div>
+          </div>
+        </div>
+        <div style="background:#FFFBEB;border:1px solid #FCD34D;border-left:4px solid #F97316;border-radius:10px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:5px">&#128993; Impact pour les agents</div>
+          <ul style="font-size:11px;color:#78350F;line-height:1.7;padding-left:14px">
+            <li>Confusion lors du remplissage des tickets</li>
+            <li>Risque de doublons de donn&eacute;es dans les rapports</li>
+            <li>Interface de ticket surcharg&eacute;e</li>
+            <li>Recommandation : utiliser un seul champ avec le formulaire adapt&eacute; &agrave; la langue selon la marque/canal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 — HELP CENTER & IA -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128218; Help Center &amp; Agent IA</h2>
+    </div>
+    <span class="tag">8 articles &middot; 0 label &middot; IA bloqu&eacute;e</span>
+  </div>
+  <div class="slide-body">
+    <p class="section-title">Ce qui existe actuellement</p>
+    <div class="grid-3" style="margin-bottom:18px">
+      <div class="card" style="border-top:4px solid var(--red)">
+        <h3>Articles publi&eacute;s</h3>
+        <div class="big-num" style="color:var(--red)">8</div>
+        <p class="sub">Tr&egrave;s insuffisant pour un catalogue produit aussi large</p>
+      </div>
+      <div class="card" style="border-top:4px solid var(--red)">
+        <h3>Articles avec labels</h3>
+        <div class="big-num" style="color:var(--red)">0</div>
+        <p class="sub">100% des articles sans label &mdash; l'IA ne peut pas fonctionner</p>
+      </div>
+      <div class="card" style="border-top:4px solid var(--blue)">
+        <h3>Cat&eacute;gories Help Center</h3>
+        <div class="big-num" style="color:var(--blue)">3</div>
+        <p class="sub">G&eacute;n&eacute;ral / Particuliers / Pro &mdash; structure de base pr&ecirc;te</p>
+      </div>
+    </div>
+    <div class="alert alert-red" style="margin-bottom:12px">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>L'Agent IA est pr&eacute;sent mais compl&egrave;tement inutilisable</strong>
+        Un agent IA est bien configur&eacute; dans le compte (visible dans la liste des agents). Cependant, pour que le bot puisse sugg&eacute;rer des articles et d&eacute;fletter des tickets, le Help Center doit poss&eacute;der : (1) suffisamment d'articles, et (2) des <strong>labels sur chaque article</strong>. Avec 8 articles sans label, le potentiel de l'IA est nul.
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="border-left:4px solid var(--orange)">
+        <h3 style="color:var(--orange)">Sujets prioritaires &agrave; documenter</h3>
+        <ul class="checklist" style="margin-top:6px">
+          <li><span class="ico">&#128295;</span>Codes erreur les plus fr&eacute;quents par gamme produit</li>
+          <li><span class="ico">&#128196;</span>Proc&eacute;dure d'activation de garantie (step-by-step)</li>
+          <li><span class="ico">&#128247;</span>Guide d'appairage AIRHOME (Android &amp; iPhone)</li>
+          <li><span class="ico">&#127760;</span>Contacts SAV par pays (Export, Allemagne, Italie)</li>
+          <li><span class="ico">&#128218;</span>Manuels et documentation technique les plus demand&eacute;s</li>
+          <li><span class="ico">&#128295;</span>Pi&egrave;ces d&eacute;tach&eacute;es : comment trouver la r&eacute;f&eacute;rence</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue)">
+        <h3 style="color:var(--blue)">Plan pour activer l'IA</h3>
+        <div class="flow" style="margin-bottom:12px">
+          <div class="flow-step" style="background:#FEE2E2;border-color:#FCA5A5">8 articles sans label</div>
+          <span class="flow-arrow">&#8594;</span>
+          <div class="flow-step" style="background:#FEF3C7">Ajouter labels + en cr&eacute;er 20+</div>
+          <span class="flow-arrow">&#8594;</span>
+          <div class="flow-step" style="background:#DCFCE7">IA op&eacute;rationnelle</div>
+        </div>
+        <ul class="checklist">
+          <li><span class="ico">&#9744;</span>Ajouter des labels &agrave; chaque article existant</li>
+          <li><span class="ico">&#9744;</span>Cr&eacute;er 20+ articles sur les sujets fr&eacute;quents</li>
+          <li><span class="ico">&#9744;</span>Configurer l'agent IA sur les canaux</li>
+          <li><span class="ico">&#9744;</span>Activer les suggestions d'articles dans le bot</li>
+          <li><span class="ico">&#9744;</span>Mesurer le taux de d&eacute;flection apr&egrave;s 30 jours</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9 — PLAN D'ACTION -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128203; Plan d'action prioris&eacute;</h2>
+    </div>
+    <span class="tag">Semaine 1 &rarr; Trimestre 1</span>
+  </div>
+  <div class="slide-body compact" style="padding:12px 20px">
+    <div class="plan-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px 28px">
+
+      <!-- S1 -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
+        <div style="background:var(--red);padding:8px 14px;display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">S1</div>
+          <div>
+            <div style="color:white;font-weight:700;font-size:13px">Semaine 1 &mdash; Actions critiques</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:11px">Moins de 2h &mdash; impact imm&eacute;diat</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px">
+          <ul class="checklist" style="gap:0">
+            <li><span class="ico">&#9744;</span><div>Activer la <strong>relance pending 24h</strong> (inactif depuis la cr&eacute;ation)</div></li>
+            <li><span class="ico">&#9744;</span><div>Activer la <strong>relance pending 5 jours</strong></div></li>
+            <li><span class="ico">&#9744;</span><div>Activer la <strong>CSAT</strong> dans Admin &gt; Compte &gt; Satisfaction client</div></li>
+            <li><span class="ico">&#9744;</span><div>Ajouter des <strong>labels aux 8 articles</strong> existants</div></li>
+            <li><span class="ico">&#9744;</span><div>Cr&eacute;er la <strong>premi&egrave;re politique SLA</strong> (first reply + r&eacute;solution)</div></li>
+            <li><span class="ico">&#9744;</span><div>Supprimer ou archiver le <strong>formulaire de ticket inactif</strong> (copie SVI)</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- S2 -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
+        <div style="background:#EAB308;padding:8px 14px;display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">S2</div>
+          <div>
+            <div style="color:white;font-weight:700;font-size:13px">Semaine 2 &mdash; Haute priorit&eacute;</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:11px">2 &agrave; 4h &mdash; organisation et nettoyage</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px">
+          <ul class="checklist" style="gap:0">
+            <li><span class="ico">&#9744;</span><div>Structurer les <strong>vues en dossiers</strong> avec pr&eacute;fixe "::" (SAV FR, Export, Italie...)</div></li>
+            <li><span class="ico">&#9744;</span><div>Supprimer les <strong>12 vues inactives</strong> par d&eacute;faut Zendesk</div></li>
+            <li><span class="ico">&#9744;</span><div>Auditer les <strong>triggers en doublons</strong> (3 versions "Notifier demandeur")</div></li>
+            <li><span class="ico">&#9744;</span><div>Examiner les <strong>11 triggers inactifs</strong> et supprimer les obsol&egrave;tes</div></li>
+            <li><span class="ico">&#9744;</span><div>Lier les <strong>politiques SLA &agrave; l'horaire d'ouverture</strong> existant</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- M1 -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
+        <div style="background:#B45309;padding:8px 14px;display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">M1</div>
+          <div>
+            <div style="color:white;font-weight:700;font-size:13px">Mois 1 &mdash; Am&eacute;liorations importantes</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:11px">1 journ&eacute;e &mdash; base de connaissance et champs</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px">
+          <ul class="checklist" style="gap:0">
+            <li><span class="ico">&#9744;</span><div>Cr&eacute;er <strong>20+ articles Help Center</strong> sur les sujets fr&eacute;quents (codes erreur, garantie, AIRHOME)</div></li>
+            <li><span class="ico">&#9744;</span><div>Configurer l'<strong>Agent IA</strong> sur les canaux avec les articles labellisés</div></li>
+            <li><span class="ico">&#9744;</span><div>Auditer et <strong>consolider les 156 champs</strong> (supprimer doublons FR/EN)</div></li>
+            <li><span class="ico">&#9744;</span><div>Archiver les <strong>macros inactives</strong> (&asymp;20) et d&eacute;finir un cycle de revue annuel</div></li>
+            <li><span class="ico">&#9744;</span><div>Cr&eacute;er une automation <strong>CSAT mauvaise note</strong> : r&eacute;ouverture + notification manager</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- T1 -->
+      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
+        <div style="background:var(--brand-accent);padding:8px 14px;display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">T1</div>
+          <div>
+            <div style="color:white;font-weight:700;font-size:13px">Trimestre 1 &mdash; Strat&eacute;gique</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:11px">Automatisation avanc&eacute;e et reporting</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px">
+          <ul class="checklist" style="gap:0">
+            <li><span class="ico">&#9744;</span><div>Activer le <strong>routing omnicanal</strong> + skill-based routing par zone g&eacute;ographique</div></li>
+            <li><span class="ico">&#9744;</span><div>Cr&eacute;er un <strong>dashboard Explore</strong> SLA + CSAT + volume par groupe</div></li>
+            <li><span class="ico">&#9744;</span><div>Installer <strong>Time Tracking</strong> pour mesurer le temps de traitement par ticket</div></li>
+            <li><span class="ico">&#9744;</span><div>&Eacute;valuer l'ajout d'un <strong>canal WhatsApp</strong> pour les demandes SAV</div></li>
+            <li><span class="ico">&#9744;</span><div>D&eacute;ployer le Help Center <strong>en anglais</strong> pour les clients Export / DE / IT</div></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 — OPPORTUNITES -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128161; Opportunit&eacute;s &amp; Flux recommand&eacute;s</h2>
+    </div>
+    <span class="tag">Court et moyen terme</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div>
+        <p class="section-title">3 flux &agrave; automatiser en priorit&eacute;</p>
+        <div class="card" style="margin-bottom:10px;border-left:4px solid var(--blue)">
+          <h3 style="color:var(--blue)">Flux 1 &middot; Activation de garantie en libre-service</h3>
+          <div class="flow" style="margin-top:7px;font-size:11px">
+            <div class="flow-step">Client : formulaire garantie</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step">Macro SAV FR</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step" style="background:#DCFCE7">Confirmation auto</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-mid);margin-top:5px">Objectif : r&eacute;duire le traitement manuel des activations standard</p>
+        </div>
+        <div class="card" style="margin-bottom:10px;border-left:4px solid var(--orange)">
+          <h3 style="color:var(--orange)">Flux 2 &middot; Escalade automatique SAV niveau 2</h3>
+          <div class="flow" style="margin-top:7px;font-size:11px">
+            <div class="flow-step">Ticket SAV ouvert</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step">48h sans r&eacute;ponse</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step">&#9745; A escalader N2</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-mid);margin-top:5px">Le champ "A escalader au niveau 2" existe d&eacute;j&agrave; — &agrave; automatiser</p>
+        </div>
+        <div class="card" style="border-left:4px solid var(--red)">
+          <h3 style="color:var(--red)">Flux 3 &middot; Recovery mauvaise CSAT</h3>
+          <div class="flow" style="margin-top:7px;font-size:11px">
+            <div class="flow-step">Mauvaise note CSAT</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step">Tag "insatisfait"</div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-step">Notif manager</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-mid);margin-top:5px">N&eacute;cessite d'abord l'activation de la CSAT</p>
+        </div>
+      </div>
+      <div>
+        <p class="section-title">Fonctionnalit&eacute;s Zendesk &agrave; exploiter</p>
+        <ul class="checklist" style="margin-bottom:14px">
+          <li><span class="ico">&#129302;</span><div><strong>Intelligent Triage (Zendesk AI)</strong><br><span style="font-size:11px;color:var(--text-mid)">Cat&eacute;gorisation automatique par intent (garantie, panne, pi&egrave;ces...) et sentiment</span></div></li>
+          <li><span class="ico">&#128269;</span><div><strong>Suggestions de macros aux agents</strong><br><span style="font-size:11px;color:var(--text-mid)">Les 144 macros sont pr&ecirc;tes — activer les suggestions automatiques</span></div></li>
+          <li><span class="ico">&#128196;</span><div><strong>Suggestions d'articles Help Center</strong><br><span style="font-size:11px;color:var(--text-mid)">D&eacute;flection 15-20% d&egrave;s que le Help Center sera enrichi et labellisé</span></div></li>
+          <li><span class="ico">&#128200;</span><div><strong>Dashboard Explore personnalis&eacute;</strong><br><span style="font-size:11px;color:var(--text-mid)">SLA + CSAT + volume + top sujets par zone / groupe</span></div></li>
+          <li><span class="ico">&#127987;</span><div><strong>Help Center multilingue</strong><br><span style="font-size:11px;color:var(--text-mid)">La base FR/EN existe d&eacute;j&agrave; via les formulaires — &eacute;tendre au Help Center</span></div></li>
+        </ul>
+        <div class="alert alert-green" style="margin-top:0;margin-bottom:0">
+          <span class="alert-icon">&#9989;</span>
+          <div><strong>Conclusion</strong> — Infrastructure solide avec 17 groupes, 144 macros organis&eacute;es et 10 formulaires. Corrections critiques urgentes (SLA, CSAT, relances), ensuite fort potentiel d'automatisation et d'IA.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 — RESUME AUDIT COMPLEMENTAIRE (3 pilliers) -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="header-left">
+      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <h2>&#128269; R&eacute;sum&eacute; des points &agrave; traiter</h2>
+    </div>
+    <span class="tag">&#128308; Critique &nbsp;&#128993; Important &nbsp;&#128994; Am&eacute;lioration</span>
+  </div>
+  <div class="slide-body slide-11-body" style="padding:20px 28px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;height:100%">
+
+      <!-- COLONNE 1 : Structure & Organisation -->
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:12px 12px 0 0;padding:14px 16px">
+          <div style="font-size:15px;font-weight:800;color:white">&#127959; Structure &amp; Organisation</div>
+        </div>
+        <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Vues</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Pas de dossiers dans les vues</strong><br><span style="font-size:11px;color:#6B7280">24 vues en liste plate sans organisation hi&eacute;rarchique &mdash; ajouter le pr&eacute;fixe "::" par zone</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>12 vues inactives (d&eacute;faut Zendesk) &agrave; supprimer</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Champs de ticket</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>156 champs — doublons FR/EN</strong><br><span style="font-size:11px;color:#6B7280">N&deg; de s&eacute;rie 1-20 exist en fran&ccedil;ais ET en anglais. Consolider via les formulaires adapt&eacute;s au canal.</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Groupes &amp; Canaux</div>
+          <ul class="checklist">
+            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div>17 groupes bien structur&eacute;s par zone et sp&eacute;cialit&eacute;</div></li>
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Agent IA non exploit&eacute;</strong><br><span style="font-size:11px;color:#6B7280">Pr&eacute;sent dans le compte mais inutilisable sans base de connaissance</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- COLONNE 2 : Processus & Automatisation -->
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="background:linear-gradient(135deg,#A855F7,#EC4899);border-radius:12px 12px 0 0;padding:14px 16px">
+          <div style="font-size:15px;font-weight:800;color:white">&#9889; Processus &amp; Automatisation</div>
+        </div>
+        <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Automations</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Relances pending inactives (24h &amp; 5j)</strong><br><span style="font-size:11px;color:#6B7280">Tickets en attente de r&eacute;ponse client sans aucun suivi automatique &rarr; orphelins</span></div></li>
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>CSAT inactive</strong><br><span style="font-size:11px;color:#6B7280">Z&eacute;ro donn&eacute;e de satisfaction depuis novembre 2023</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Triggers</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Doublons de triggers</strong><br><span style="font-size:11px;color:#6B7280">3 versions actives de "Notifier le demandeur de la r&eacute;ception" &mdash; risque d'emails multiples</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>11 triggers inactifs &agrave; examiner et nettoyer</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">SLA</div>
+          <ul class="checklist">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Aucune politique SLA configur&eacute;e</strong><br><span style="font-size:11px;color:#6B7280">Pas de mesure des d&eacute;lais, pas d'alertes, pas de reporting performance</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Horaires d'ouverture OK &mdash; pr&ecirc;ts &agrave; &ecirc;tre li&eacute;s aux politiques SLA</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- COLONNE 3 : Gestion & Qualite -->
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="background:linear-gradient(135deg,#EC4899,#F97316);border-radius:12px 12px 0 0;padding:14px 16px">
+          <div style="font-size:15px;font-weight:800;color:white">&#128200; Gestion &amp; Qualit&eacute; Op&eacute;rationnelle</div>
+        </div>
+        <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Explore &amp; Reporting</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Pas de dashboard personnalis&eacute; SLA / CSAT / volume par groupe</div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Time Tracking absent &mdash; impossible de mesurer le temps de traitement r&eacute;el</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Base de connaissances</div>
+          <ul class="checklist" style="margin-bottom:12px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>8 articles seulement, 0 label</strong><br><span style="font-size:11px;color:#6B7280">Pour un fabricant avec des dizaines de gammes produits, le Help Center est quasiment vide</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Structure de cat&eacute;gories en place (G&eacute;n&eacute;ral / Particuliers / Pro) &mdash; bonne base &agrave; alimenter</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Points forts confirm&eacute;s</div>
+          <ul class="checklist">
+            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div><strong>Macros excellent</strong><br><span style="font-size:11px;color:#6B7280">144 macros tr&egrave;s bien organis&eacute;es avec pr&eacute;fixe "::" par service</span></div></li>
+            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div><strong>10 formulaires sp&eacute;cialis&eacute;s</strong><br><span style="font-size:11px;color:#6B7280">Bonne collecte de donn&eacute;es &agrave; l'entr&eacute;e des tickets</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12 — MERCI -->
+<div class="slide slide-cover slide-merci" style="background: linear-gradient(135deg, #0F0A1E 0%, #1a0a35 40%, #2d1060 100%);">
+  <div class="cover-logo omycare-logo">
+    <img src="../Omycarelogo.png" alt="OmyCare" style="height:34px">
+  </div>
+
+  <div style="margin-bottom:16px;font-size:60px">&#128591;</div>
+  <h1 style="font-size:54px;margin-bottom:12px">Merci <span>pour votre</span><br><span>confiance</span></h1>
+  <p class="subtitle" style="margin-bottom:36px;max-width:540px;line-height:1.6">
+    Ce rapport est la base de travail pour optimiser votre compte Zendesk Airwell.<br>
+    Nous restons disponibles pour toute question ou pour mettre en oeuvre ces recommandations ensemble.
+  </p>
+
+  <div class="merci-info-row" style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-bottom:36px">
+    <div style="text-align:center">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px">Auditeur</div>
+      <div style="font-size:17px;font-weight:700;color:white">Stephanie &middot; OmyCare</div>
+    </div>
+    <div class="merci-divider" style="width:1px;background:rgba(255,255,255,0.12)"></div>
+    <div style="text-align:center">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px">Contact</div>
+      <div style="font-size:17px;font-weight:700;color:white">cvasselin@airwell.com</div>
+    </div>
+    <div class="merci-divider" style="width:1px;background:rgba(255,255,255,0.12)"></div>
+    <div style="text-align:center">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px">Date</div>
+      <div style="font-size:17px;font-weight:700;color:white">Juin 2026</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.35);border-radius:14px;padding:16px 32px;max-width:480px;text-align:center">
+    <div style="font-size:12px;color:#C4B5FD;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px">Prochaine &eacute;tape</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.8)">Validation des priorit&eacute;s S1 et activation des 3 corrections critiques (SLA, CSAT, relances)</div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total   = slides.length;
+  let current   = 0;
+
+  const dotsEl = document.getElementById('dots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+  document.getElementById('counter').textContent = '1 / ' + total;
+  updateUI();
+
+  function updateUI() {
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.className = 'dot' + (i === current ? ' active' : '');
+    });
+  }
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    setTimeout(() => slides[prev].classList.remove('exit'), 400);
+    current = n;
+    slides[current].classList.add('active');
+    updateUI();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+  });
+
+  let startX = 0, startY = 0;
+  document.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    const body = e.target.closest('.slide-body');
+    if (body && Math.abs(dy) > 15) return;
+    if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 55) {
+      dx < 0 ? next() : prev();
+    }
+  });
+</script>
+</body>
+</html>
