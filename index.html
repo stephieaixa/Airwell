@@ -108,6 +108,7 @@
     inset: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     opacity: 0;
     transform: translateX(60px);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -390,7 +391,6 @@
           <li><span class="ico">&#128247;</span>Vues actives avec emojis pour identification rapide</li>
           <li><span class="ico">&#128336;</span>Horaires d'ouverture configur&eacute;s (Lu-Ve 8h-18h)</li>
           <li><span class="ico">&#129302;</span>Agent IA pr&eacute;sent dans le compte (potentiel &agrave; exploiter)</li>
-          <li><span class="ico">&#127760;</span>Support multilingue : FR + EN natif</li>
         </ul>
       </div>
       <div class="compare-col compare-bad">
@@ -399,8 +399,9 @@
           <li><span class="ico">&#128308;</span><strong>Aucune politique SLA configur&eacute;e</strong> — pas de mesure des d&eacute;lais de r&eacute;ponse</li>
           <li><span class="ico">&#128308;</span>CSAT d&eacute;sactiv&eacute;e — 0 notation collect&eacute;e depuis la cr&eacute;ation du compte</li>
           <li><span class="ico">&#128308;</span>Relances "pending" d&eacute;sactiv&eacute;es — tickets orphelins sans suivi</li>
-          <li><span class="ico">&#128308;</span>Help Center trop l&eacute;ger : 8 articles, aucun label (IA inut ilisable)</li>
-          <li><span class="ico">&#128308;</span>Vues sans dossiers — liste plate de 24 vues, pas de structure hiérarchique</li>
+          <li><span class="ico">&#128308;</span>Help Center trop l&eacute;ger : 8 articles, aucun label (IA inutilisable)</li>
+          <li><span class="ico">&#128308;</span>Vues sans dossiers — liste plate de 24 vues, pas de structure hi&eacute;rarchique</li>
+          <li><span class="ico">&#128308;</span><strong>Macros dupliqu&eacute;es FR/EN</strong> — les macros existent en deux versions (fran&ccedil;ais + anglais) au lieu d'utiliser le <strong>Contenu Dynamique</strong> de Zendesk (<code style="background:#FEE2E2;padding:1px 4px;border-radius:3px;font-size:11px">&#123;&#123;dc.nom&#125;&#125;</code>), qui adapte automatiquement la langue selon le profil du demandeur</li>
           <li><span class="ico">&#128308;</span>156 champs de ticket — nombreux doublons FR/EN, source de confusion</li>
           <li><span class="ico">&#128993;</span>12 vues inactives (anciennes vues Zendesk) encombrent l'interface</li>
           <li><span class="ico">&#128993;</span>Triggers en doublons : 3 versions du m&ecirc;me trigger "Notifier le demandeur"</li>
@@ -1001,7 +1002,7 @@
           </ul>
           <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Points forts confirm&eacute;s</div>
           <ul class="checklist">
-            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div><strong>Macros excellent</strong><br><span style="font-size:11px;color:#6B7280">144 macros tr&egrave;s bien organis&eacute;es avec pr&eacute;fixe "::" par service</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Macros dupliqu&eacute;es FR/EN au lieu du Contenu Dynamique</strong><br><span style="font-size:11px;color:#6B7280">Structure "::" bonne, mais chaque macro existe en deux versions. Utiliser <code style="background:#FEF3C7;padding:1px 3px;border-radius:3px">&#123;&#123;dc.nom&#125;&#125;</code> r&eacute;duirait de moiti&eacute; le nombre de macros &agrave; maintenir</span></div></li>
             <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div><strong>10 formulaires sp&eacute;cialis&eacute;s</strong><br><span style="font-size:11px;color:#6B7280">Bonne collecte de donn&eacute;es &agrave; l'entr&eacute;e des tickets</span></div></li>
           </ul>
         </div>
@@ -1086,8 +1087,9 @@
   function prev() { goTo(current - 1); }
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+    // Solo flechas horizontales para navegar — las verticales y espacio quedan libres para scroll
+    if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); prev(); }
   });
 
   let startX = 0, startY = 0;
@@ -1098,8 +1100,9 @@
   document.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - startX;
     const dy = e.changedTouches[0].clientY - startY;
-    const body = e.target.closest('.slide-body');
-    if (body && Math.abs(dy) > 15) return;
+    // Si hay movimiento vertical predominante, dejar que el browser scrollee
+    if (Math.abs(dy) > Math.abs(dx)) return;
+    // Solo swipe horizontal claro dispara navegación
     if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 55) {
       dx < 0 ? next() : prev();
     }
