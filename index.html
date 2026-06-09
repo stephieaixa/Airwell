@@ -168,7 +168,7 @@
   }
 
   /* SLIDE BODY */
-  .slide-body { flex: 1; background: var(--bg); padding: 28px 40px; overflow: hidden; }
+  .slide-body { flex: 1; min-height: 0; background: var(--bg); padding: 28px 40px; overflow-y: auto; overscroll-behavior: contain; }
 
   /* COMPONENTS */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -332,7 +332,7 @@
 <!-- SLIDE 1 — COUVERTURE -->
 <div class="slide slide-cover active">
   <div class="cover-logo omycare-logo">
-    <img src="../Omycarelogo.png" alt="OmyCare" style="height:34px">
+    <img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:34px">
   </div>
   <div class="badge">&#128269; Audit Complet &middot; Juin 2026</div>
   <h1>Audit Zendesk<br><span>Airwell</span></h1>
@@ -354,7 +354,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128202; Vue d'ensemble du compte</h2>
     </div>
     <span class="tag">Diagnostic global</span>
@@ -414,7 +414,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128308; Les 4 urgences critiques</h2>
     </div>
     <span class="tag">Impact direct sur les op&eacute;rations</span>
@@ -462,7 +462,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#9889; Triggers &amp; Automations</h2>
     </div>
     <span class="tag">62 triggers &middot; 4 automations</span>
@@ -504,19 +504,19 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#8987; SLA &amp; Horaires d'ouverture</h2>
     </div>
     <span class="tag">SLA absent &middot; horaires OK</span>
   </div>
-  <div class="slide-body">
+  <div class="slide-body compact">
     <div class="grid-2">
       <div>
         <p class="section-title">Situation actuelle des SLA</p>
-        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #EF4444;border-radius:10px;padding:16px 18px;margin-bottom:14px">
-          <div style="font-size:15px;font-weight:800;color:#991B1B;margin-bottom:8px">&#128308; Aucune politique SLA configur&eacute;e</div>
-          <p style="font-size:13px;color:#7F1D1D;line-height:1.6">Il n'existe <strong>aucune politique SLA</strong> sur ce compte Zendesk. L'API SLA renvoie une erreur "Not found". Sans SLA :</p>
-          <ul style="font-size:12px;color:#7F1D1D;line-height:1.8;padding-left:16px;margin-top:8px">
+        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #EF4444;border-radius:10px;padding:10px 14px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:800;color:#991B1B;margin-bottom:6px">&#128308; Aucune politique SLA configur&eacute;e</div>
+          <p style="font-size:11px;color:#7F1D1D;line-height:1.5">Il n'existe <strong>aucune politique SLA</strong> sur ce compte Zendesk. L'API SLA renvoie une erreur "Not found". Sans SLA :</p>
+          <ul style="font-size:11px;color:#7F1D1D;line-height:1.6;padding-left:14px;margin-top:6px">
             <li>Impossible de mesurer le <strong>temps de premi&egrave;re r&eacute;ponse</strong></li>
             <li>Pas de suivi du <strong>temps de r&eacute;solution</strong></li>
             <li>Aucune alerte en cas de d&eacute;passement</li>
@@ -566,7 +566,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128065; Vues &amp; Organisation</h2>
     </div>
     <span class="tag">36 vues &middot; 24 actives &middot; sans dossiers</span>
@@ -637,7 +637,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#127981; Formulaires &amp; Champs de ticket</h2>
     </div>
     <span class="tag">10 formulaires &middot; 156 champs</span>
@@ -698,14 +698,14 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128218; Help Center &amp; Agent IA</h2>
     </div>
     <span class="tag">8 articles &middot; 0 label &middot; IA bloqu&eacute;e</span>
   </div>
-  <div class="slide-body">
+  <div class="slide-body compact">
     <p class="section-title">Ce qui existe actuellement</p>
-    <div class="grid-3" style="margin-bottom:18px">
+    <div class="grid-3" style="margin-bottom:10px">
       <div class="card" style="border-top:4px solid var(--red)">
         <h3>Articles publi&eacute;s</h3>
         <div class="big-num" style="color:var(--red)">8</div>
@@ -722,7 +722,7 @@
         <p class="sub">G&eacute;n&eacute;ral / Particuliers / Pro &mdash; structure de base pr&ecirc;te</p>
       </div>
     </div>
-    <div class="alert alert-red" style="margin-bottom:12px">
+    <div class="alert alert-red" style="margin-bottom:8px">
       <span class="alert-icon">&#128308;</span>
       <div>
         <strong>L'Agent IA est pr&eacute;sent mais compl&egrave;tement inutilisable</strong>
@@ -766,7 +766,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128203; Plan d'action prioris&eacute;</h2>
     </div>
     <span class="tag">Semaine 1 &rarr; Trimestre 1</span>
@@ -863,7 +863,7 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128161; Opportunit&eacute;s &amp; Flux recommand&eacute;s</h2>
     </div>
     <span class="tag">Court et moyen terme</span>
@@ -928,13 +928,13 @@
 <div class="slide">
   <div class="slide-header">
     <div class="header-left">
-      <div class="omycare-logo"><img src="../Omycarelogo.png" alt="OmyCare" style="height:30px"></div>
+      <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
       <h2>&#128269; R&eacute;sum&eacute; des points &agrave; traiter</h2>
     </div>
     <span class="tag">&#128308; Critique &nbsp;&#128993; Important &nbsp;&#128994; Am&eacute;lioration</span>
   </div>
   <div class="slide-body slide-11-body" style="padding:20px 28px">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;height:100%">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;min-height:100%">
 
       <!-- COLONNE 1 : Structure & Organisation -->
       <div style="display:flex;flex-direction:column;gap:0">
@@ -1014,7 +1014,7 @@
 <!-- SLIDE 12 — MERCI -->
 <div class="slide slide-cover slide-merci" style="background: linear-gradient(135deg, #0F0A1E 0%, #1a0a35 40%, #2d1060 100%);">
   <div class="cover-logo omycare-logo">
-    <img src="../Omycarelogo.png" alt="OmyCare" style="height:34px">
+    <img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:34px">
   </div>
 
   <div style="margin-bottom:16px;font-size:60px">&#128591;</div>
@@ -1032,7 +1032,7 @@
     <div class="merci-divider" style="width:1px;background:rgba(255,255,255,0.12)"></div>
     <div style="text-align:center">
       <div style="font-size:12px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px">Contact</div>
-      <div style="font-size:17px;font-weight:700;color:white">cvasselin@airwell.com</div>
+      <div style="font-size:17px;font-weight:700;color:white">guillaume.garcia@omycare.fr</div>
     </div>
     <div class="merci-divider" style="width:1px;background:rgba(255,255,255,0.12)"></div>
     <div style="text-align:center">
