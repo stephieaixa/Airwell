@@ -386,11 +386,10 @@
         <h4>&#10003; Points forts</h4>
         <ul class="checklist">
           <li><span class="ico">&#128203;</span>Macros tr&egrave;s bien structur&eacute;es avec pr&eacute;fixe "::" (AIRHOME, SAV FR, SAV Italie, MMH, etc.)</li>
-          <li><span class="ico">&#127981;</span>10 formulaires de ticket sp&eacute;cialis&eacute;s par besoin (FR + EN)</li>
+          <li><span class="ico">&#127981;</span>10 formulaires de ticket sp&eacute;cialis&eacute;s par besoin (FR + EN ⚠️)</li>
           <li><span class="ico">&#128101;</span>17 groupes bien d&eacute;finis par service et zone g&eacute;ographique</li>
           <li><span class="ico">&#128247;</span>Vues actives avec emojis pour identification rapide</li>
           <li><span class="ico">&#128336;</span>Horaires d'ouverture configur&eacute;s (Lu-Ve 8h-18h)</li>
-          <li><span class="ico">&#129302;</span>Agent IA pr&eacute;sent dans le compte (potentiel &agrave; exploiter)</li>
         </ul>
       </div>
       <div class="compare-col compare-bad">
@@ -399,16 +398,17 @@
           <li><span class="ico">&#128308;</span><strong>Aucune politique SLA configur&eacute;e</strong> — pas de mesure des d&eacute;lais de r&eacute;ponse</li>
           <li><span class="ico">&#128308;</span>CSAT d&eacute;sactiv&eacute;e — 0 notation collect&eacute;e depuis la cr&eacute;ation du compte</li>
           <li><span class="ico">&#128308;</span>Relances "pending" d&eacute;sactiv&eacute;es — tickets orphelins sans suivi</li>
-          <li><span class="ico">&#128308;</span>Help Center trop l&eacute;ger : 8 articles, aucun label (IA inutilisable)</li>
+          <li><span class="ico">&#128308;</span>Help Center trop l&eacute;ger : 8 articles, aucun label (Ils sont importants pour l’IA)</li>
           <li><span class="ico">&#128308;</span>Vues sans dossiers — liste plate de 24 vues, pas de structure hi&eacute;rarchique</li>
-          <li><span class="ico">&#128308;</span><strong>Macros dupliqu&eacute;es FR/EN</strong> — chaque macro existe en deux versions au lieu d'utiliser le Contenu Dynamique Zendesk, qui adapte la langue automatiquement</li>
-          <li><span class="ico">&#128308;</span>156 champs de ticket — nombreux doublons FR/EN, source de confusion</li>
+          <li><span class="ico">&#128308;</span><strong>Macros dupliqu&eacute;es FR/IT</strong> — chaque macro existe en deux versions au lieu d'utiliser le Contenu Dynamique Zendesk, qui adapte la langue automatiquement</li>
+          <li><span class="ico">&#128308;</span>156 champs de ticket — nombreux doublons (Geste co, Geste co SAv, Adress, NAS format France, etc), source de confusion</li>
           <li><span class="ico">&#128993;</span>12 vues inactives (anciennes vues Zendesk) encombrent l'interface</li>
           <li><span class="ico">&#128993;</span>Triggers en doublons : 3 versions du m&ecirc;me trigger "Notifier le demandeur"</li>
           <li><span class="ico">&#128308;</span><strong>Footer email contient le branding Zendesk</strong> — non professionnel, &agrave; supprimer en priorit&eacute;</li>
           <li><span class="ico">&#128308;</span>Enregistrement DKIM/DNS manquant — s&eacute;curit&eacute; des emails compromise, risque de spam ou usurpation</li>
-          <li><span class="ico">&#128308;</span><strong>Pas de champs conditionnels dans les formulaires</strong> — tous les champs affich&eacute;s m&ecirc;me non pertinents</li>
+          <li><span class="ico">&#128308;</span><strong>Pas de champs conditionnels dans les formulaires utilisateurs</strong> — tous les champs affich&eacute;s m&ecirc;me non pertinents</li>
           <li><span class="ico">&#128993;</span>Copilot : 40 recommandations non enregistr&eacute;es — l'IA n'apprend pas de l'&eacute;quipe</li>
+          <li><span class="ico">&#128993;</span>Trigger : La priorité normale lors de la création est manquante.</li>
         </ul>
       </div>
     </div>
@@ -449,7 +449,7 @@
     <div class="alert alert-red">
       <span class="alert-icon">&#128308;</span>
       <div>
-        <strong>C4 &middot; Help Center insuffisant &mdash; Agent IA inutilisable</strong>
+        <strong>C4 &middot; Help Center insuffisant &mdash; Agent IA insuffisant</strong>
         Seulement 8 articles dans le Help Center, et <em>aucun d'entre eux ne poss&egrave;de de label</em>. Les labels sont indispensables pour que l'agent IA (d&eacute;j&agrave; pr&eacute;sent dans le compte) puisse sugg&eacute;rer des articles et d&eacute;fletter des tickets. En l'&eacute;tat, le bot ne peut rien faire.
       </div>
     </div>
@@ -498,7 +498,7 @@
       <thead><tr><th>Automation</th><th>Statut</th><th>Note</th></tr></thead>
       <tbody>
         <tr><td>Clore le ticket 15 jours apr&egrave;s r&eacute;solution</td><td><span class="badge-pill badge-green">&#10003; Actif</span></td><td style="color:var(--text-mid)">—</td></tr>
-        <tr><td>SP vers SP</td><td><span class="badge-pill badge-green">&#10003; Actif</span></td><td style="color:var(--text-mid)">Routage interne SP</td></tr>
+        <tr><td>SP vers SP</td><td><span class="badge-pill badge-green">&#10003; Actif</span></td><td style="color:var(--text-mid)">Routage interne SP ⚠️ Je ne comprends pas pourquoi cela se trouve dans une automatisation plutôt que dans un déclencheur (trigger), ni quel en est l&eacute;objectif. J&eacute;en ai vu plusieurs du même type également dans les triggers, et cela semble redondant</td></tr>
         <tr><td>Notification de demande en attente depuis 24 heures</td><td><span class="badge-pill badge-red">&#10007; Inactif</span></td><td style="color:var(--red);font-size:12px">PRIORIT&Eacute; 1 — &agrave; activer imm&eacute;diatement</td></tr>
         <tr><td>Notification de demande en attente depuis 5 jours</td><td><span class="badge-pill badge-red">&#10007; Inactif</span></td><td style="color:var(--orange);font-size:12px">&Agrave; activer apr&egrave;s la relance 24h</td></tr>
       </tbody>
@@ -507,6 +507,10 @@
     <div class="alert alert-red" style="margin-bottom:7px">
       <span class="alert-icon">&#128308;</span>
       <div><strong>Trigger cass&eacute; : Service Client Allemagne</strong> — Ce trigger contient une erreur de configuration. Il doit &ecirc;tre corrig&eacute; ou d&eacute;sactiv&eacute; imm&eacute;diatement pour &eacute;viter un comportement impr&eacute;visible sur les tickets DE.</div>
+    </div>
+    <div class="alert alert-red" style="margin-bottom:7px">
+      <span class="alert-icon">&#128308;</span>
+      <div><strong>Triggers Process & Workflows Reçu ⚠️ Je ne comprends pas l’objectif. Cela semble redondant dans plusieurs cas</div>
     </div>
     <div class="alert alert-red" style="margin-bottom:7px">
       <span class="alert-icon">&#128308;</span>
@@ -757,7 +761,7 @@
       <div class="card" style="border-top:4px solid var(--red)">
         <h3>Articles avec labels</h3>
         <div class="big-num" style="color:var(--red)">0</div>
-        <p class="sub">100% des articles sans label &mdash; l'IA ne peut pas fonctionner</p>
+        <p class="sub">100% des articles sans label &mdash; l'IA insuffisant</p>
       </div>
       <div class="card" style="border-top:4px solid var(--blue)">
         <h3>Cat&eacute;gories Help Center</h3>
@@ -768,7 +772,7 @@
     <div class="alert alert-red" style="margin-bottom:8px">
       <span class="alert-icon">&#128308;</span>
       <div>
-        <strong>L'Agent IA est pr&eacute;sent mais compl&egrave;tement inutilisable</strong>
+        <strong>L'Agent IA est insuffisant</strong>
         Un agent IA est bien configur&eacute; dans le compte (visible dans la liste des agents). Cependant, pour que le bot puisse sugg&eacute;rer des articles et d&eacute;fletter des tickets, le Help Center doit poss&eacute;der : (1) suffisamment d'articles, et (2) des <strong>labels sur chaque article</strong>. Avec 8 articles sans label, le potentiel de l'IA est nul.
       </div>
     </div>
