@@ -405,6 +405,10 @@
           <li><span class="ico">&#128308;</span>156 champs de ticket — nombreux doublons FR/EN, source de confusion</li>
           <li><span class="ico">&#128993;</span>12 vues inactives (anciennes vues Zendesk) encombrent l'interface</li>
           <li><span class="ico">&#128993;</span>Triggers en doublons : 3 versions du m&ecirc;me trigger "Notifier le demandeur"</li>
+          <li><span class="ico">&#128308;</span><strong>Footer email contient le branding Zendesk</strong> — non professionnel, &agrave; supprimer en priorit&eacute;</li>
+          <li><span class="ico">&#128308;</span>Enregistrement DKIM/DNS manquant — s&eacute;curit&eacute; des emails compromise, risque de spam ou usurpation</li>
+          <li><span class="ico">&#128308;</span><strong>Pas de champs conditionnels dans les formulaires</strong> — tous les champs affich&eacute;s m&ecirc;me non pertinents</li>
+          <li><span class="ico">&#128993;</span>Copilot : 40 recommandations non enregistr&eacute;es — l'IA n'apprend pas de l'&eacute;quipe</li>
         </ul>
       </div>
     </div>
@@ -416,7 +420,7 @@
   <div class="slide-header">
     <div class="header-left">
       <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
-      <h2>&#128308; Les 4 urgences critiques</h2>
+      <h2>&#128308; Les urgences critiques</h2>
     </div>
     <span class="tag">Impact direct sur les op&eacute;rations</span>
   </div>
@@ -449,11 +453,25 @@
         Seulement 8 articles dans le Help Center, et <em>aucun d'entre eux ne poss&egrave;de de label</em>. Les labels sont indispensables pour que l'agent IA (d&eacute;j&agrave; pr&eacute;sent dans le compte) puisse sugg&eacute;rer des articles et d&eacute;fletter des tickets. En l'&eacute;tat, le bot ne peut rien faire.
       </div>
     </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C5 &middot; Footer email avec branding Zendesk</strong>
+        Les emails envoy&eacute;s aux clients contiennent encore le footer Zendesk par d&eacute;faut ("Powered by Zendesk"). C'est non professionnel et nuit &agrave; l'image de marque Airwell. Ce footer doit &ecirc;tre supprim&eacute; ou remplac&eacute; par un footer aux couleurs Airwell dans les param&egrave;tres du template email.
+      </div>
+    </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">&#128308;</span>
+      <div>
+        <strong>C6 &middot; Pas de champs conditionnels dans les formulaires</strong>
+        Les 10 formulaires affichent tous leurs champs simultan&eacute;ment, sans logique conditionnelle. Les agents et clients voient des dizaines de champs dont la majorit&eacute; sont non pertinents selon le type de demande. L'ajout de la logique conditionnelle (afficher un champ uniquement si un autre est rempli) r&eacute;duirait la friction et les erreurs de saisie.
+      </div>
+    </div>
     <div class="alert alert-orange">
       <span class="alert-icon">&#128993;</span>
       <div>
-        <strong>C5 &middot; Vues sans organisation en dossiers</strong>
-        24 vues actives en liste plate, sans aucune structure hiérarchique de type "::" ou sous-dossiers. À mesure que l'équipe grandit et que de nouvelles vues s'ajoutent, la navigation devient difficile. Les vues devraient être regroupées par zone (SAV FR, Export, Allemagne, Italie, Applications...).
+        <strong>C7 &middot; Vues sans organisation en dossiers</strong>
+        24 vues actives en liste plate, sans aucune structure hi&eacute;rarchique de type "::" ou sous-dossiers. &Agrave; mesure que l'&eacute;quipe grandit et que de nouvelles vues s'ajoutent, la navigation devient difficile. Les vues devraient &ecirc;tre regroup&eacute;es par zone (SAV FR, Export, Allemagne, Italie, Applications...).
       </div>
     </div>
   </div>
@@ -486,13 +504,33 @@
       </tbody>
     </table>
     <p class="section-title" style="margin-top:10px">Probl&egrave;mes identifies dans les triggers</p>
+    <div class="alert alert-red" style="margin-bottom:7px">
+      <span class="alert-icon">&#128308;</span>
+      <div><strong>Trigger cass&eacute; : Service Client Allemagne</strong> — Ce trigger contient une erreur de configuration. Il doit &ecirc;tre corrig&eacute; ou d&eacute;sactiv&eacute; imm&eacute;diatement pour &eacute;viter un comportement impr&eacute;visible sur les tickets DE.</div>
+    </div>
+    <div class="alert alert-red" style="margin-bottom:7px">
+      <span class="alert-icon">&#128308;</span>
+      <div><strong>Trigger #21912845082385 — mauvaise utilisation du Contenu Dynamique</strong> — Le corps du mail contient du texte en double &agrave; cause d'une utilisation incorrecte des variables de Contenu Dynamique. Le message re&ccedil;u par le client est mal form&eacute;.</div>
+    </div>
     <div class="alert alert-orange" style="margin-bottom:7px">
       <span class="alert-icon">&#128993;</span>
       <div><strong>Doublons de triggers "Notifier le demandeur"</strong> — Ce trigger existe en 3 versions actives simultan&eacute;ment (&#127984; g&eacute;n&eacute;rique, &#9992; pour Export/DE, &#9992;SP pour les pi&egrave;ces). Risque d'emails en double selon la marque ou le canal d'entr&eacute;e. &Agrave; cartographier et consolider.</div>
     </div>
     <div class="alert alert-orange" style="margin-bottom:7px">
       <span class="alert-icon">&#128993;</span>
-      <div><strong>Triggers de notification Zendesk par d&eacute;faut d&eacute;sactiv&eacute;s</strong> — Les triggers syst&egrave;me (notifier assigné, notifier groupe, notifier demandeur CC) sont tous inactifs, remplac&eacute;s par des triggers custom par service. Cette approche est plus complexe &agrave; maintenir — v&eacute;rifier la couverture compl&egrave;te.</div>
+      <div><strong>Signature email : incoh&eacute;rence entre triggers</strong> — Certains triggers incluent une signature cod&eacute;e en dur, d'autres non. Manque de standardisation — &agrave; uniformiser via un template ou un Contenu Dynamique de signature.</div>
+    </div>
+    <div class="alert alert-orange" style="margin-bottom:7px">
+      <span class="alert-icon">&#128993;</span>
+      <div><strong>Pas de logo dans le template email des triggers</strong> — Les emails envoy&eacute;s via triggers n'ont pas de logo Airwell. &Agrave; ajouter dans le template HTML des notifications pour renforcer l'identit&eacute; visuelle.</div>
+    </div>
+    <div class="alert alert-orange" style="margin-bottom:7px">
+      <span class="alert-icon">&#128993;</span>
+      <div><strong>Triggers de notification Zendesk par d&eacute;faut d&eacute;sactiv&eacute;s</strong> — Les triggers syst&egrave;me (notifier assign&eacute;, notifier groupe, notifier demandeur CC) sont tous inactifs, remplac&eacute;s par des triggers custom par service. Cette approche est plus complexe &agrave; maintenir — v&eacute;rifier la couverture compl&egrave;te.</div>
+    </div>
+    <div class="alert alert-orange" style="margin-bottom:7px">
+      <span class="alert-icon">&#128993;</span>
+      <div><strong>Automation #23001458768017 &agrave; auditer</strong> — "SP vers SP" : v&eacute;rifier si le comportement est toujours voulu et s'il n'y a pas de conflits avec d'autres r&egrave;gles de routage actives.</div>
     </div>
     <div class="alert alert-blue" style="margin-bottom:0">
       <span class="alert-icon">&#128161;</span>
@@ -662,9 +700,13 @@
             <tr style="background:#FEF2F2"><td>Formulaire de ticket SVI - Copie <span style="color:var(--red);font-size:10px">&#9888;</span></td><td><span class="badge-pill badge-red" style="font-size:9px">&#10007; Inactif</span></td></tr>
           </tbody>
         </table>
-        <div class="alert alert-green" style="margin-top:8px">
+        <div class="alert alert-green" style="margin-top:8px;margin-bottom:8px">
           <span class="alert-icon">&#9989;</span>
           <div style="font-size:11px">9 formulaires actifs sp&eacute;cialis&eacute;s par canal et type de demande &mdash; bonne pratique. 1 formulaire inactif &agrave; archiver.</div>
+        </div>
+        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-left:4px solid #EF4444;border-radius:10px;padding:10px 14px">
+          <div style="font-size:12px;font-weight:700;color:#991B1B;margin-bottom:5px">&#128308; Pas de champs conditionnels</div>
+          <p style="font-size:11px;color:#7F1D1D;line-height:1.5">Tous les champs sont affich&eacute;s simultan&eacute;ment, quelle que soit la demande. La logique conditionnelle permettrait de n'afficher que les champs pertinents selon le type de ticket et r&eacute;duirait la confusion des agents et clients.</p>
         </div>
       </div>
       <div>
@@ -937,25 +979,45 @@
   <div class="slide-body slide-11-body" style="padding:20px 28px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;min-height:100%">
 
-      <!-- COLONNE 1 : Structure & Organisation -->
+      <!-- COLONNE 1 : Structure & Sécurité -->
       <div style="display:flex;flex-direction:column;gap:0">
         <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);border-radius:12px 12px 0 0;padding:14px 16px">
-          <div style="font-size:15px;font-weight:800;color:white">&#127959; Structure &amp; Organisation</div>
+          <div style="font-size:15px;font-weight:800;color:white">&#127959; Structure &amp; S&eacute;curit&eacute;</div>
         </div>
         <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Vues</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Pas de dossiers dans les vues</strong><br><span style="font-size:11px;color:#6B7280">24 vues en liste plate sans organisation hi&eacute;rarchique &mdash; ajouter le pr&eacute;fixe "::" par zone</span></div></li>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Mail</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Enregistrement DKIM/DNS manquant</strong><br><span style="font-size:11px;color:#6B7280">S&eacute;curit&eacute; des emails compromise &mdash; risque de spam ou usurpation</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Email template</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Personnalisation &amp; logo manquants dans le template</div></li>
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Footer email contient encore le branding Zendesk</strong><br><span style="font-size:11px;color:#6B7280">Non professionnel &mdash; &agrave; supprimer en priorit&eacute;</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Vues</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Cr&eacute;er des dossiers pour organiser les vues (pr&eacute;fixe "::")</div></li>
             <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>12 vues inactives (d&eacute;faut Zendesk) &agrave; supprimer</div></li>
           </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Champs de ticket</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>156 champs — doublons FR/EN</strong><br><span style="font-size:11px;color:#6B7280">N&deg; de s&eacute;rie 1-20 exist en fran&ccedil;ais ET en anglais. Consolider via les formulaires adapt&eacute;s au canal.</span></div></li>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Groupes</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div>17 groupes pr&eacute;sents &mdash; v&eacute;rifier que le flow correspond aux besoins actuels</div></li>
           </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Groupes &amp; Canaux</div>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Canaux</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Aucun agent IA configur&eacute; sur les canaux</strong><br><span style="font-size:11px;color:#6B7280">Agent IA pr&eacute;sent dans le compte mais non d&eacute;ploy&eacute;</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Champs de ticket</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Champs dupliqu&eacute;s FR/EN</strong><br><span style="font-size:11px;color:#6B7280">La duplication est inutile avec le Contenu Dynamique &mdash; un seul champ suffit</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Formulaires</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Pas de champs conditionnels</strong><br><span style="font-size:11px;color:#6B7280">Les formulaires affichent tous les champs m&ecirc;me si non pertinents &mdash; impl&eacute;menter la logique conditionnelle</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Copilot</div>
           <ul class="checklist">
-            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div>17 groupes bien structur&eacute;s par zone et sp&eacute;cialit&eacute;</div></li>
-            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Agent IA non exploit&eacute;</strong><br><span style="font-size:11px;color:#6B7280">Pr&eacute;sent dans le compte mais inutilisable sans base de connaissance</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>40 recommandations Copilot non enregistr&eacute;es</strong><br><span style="font-size:11px;color:#6B7280">Les suggestions IA ne sont pas valid&eacute;es/enregistr&eacute;es &mdash; l'IA n'apprend pas</span></div></li>
           </ul>
         </div>
       </div>
@@ -966,44 +1028,56 @@
           <div style="font-size:15px;font-weight:800;color:white">&#9889; Processus &amp; Automatisation</div>
         </div>
         <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Automations</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Relances pending inactives (24h &amp; 5j)</strong><br><span style="font-size:11px;color:#6B7280">Tickets en attente de r&eacute;ponse client sans aucun suivi automatique &rarr; orphelins</span></div></li>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Triggers</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Pas de trigger pour la priorit&eacute; Normale</div></li>
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Trigger #21912845082385 : texte dupliqu&eacute;</strong><br><span style="font-size:11px;color:#6B7280">Mauvaise utilisation du Contenu Dynamique &mdash; texte en double dans le corps du mail</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Duplication inutile de triggers de notification par langue &mdash; remplacer par Contenu Dynamique</div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Signature des emails : cod&eacute;e parfois oui, parfois non &mdash; incoh&eacute;rence &agrave; uniformiser</div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Pas de logo dans le template email des triggers</div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Trigger cass&eacute; : Service Client Allemagne</strong><br><span style="font-size:11px;color:#6B7280">&Agrave; corriger ou d&eacute;sactiver</span></div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Automations</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Bump tickets r&eacute;solus : d&eacute;sactiv&eacute;</div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Automation #23001458768017 &agrave; auditer</strong><br><span style="font-size:11px;color:#6B7280">"SP vers SP" &mdash; v&eacute;rifier si le comportement est toujours voulu</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Relances pending 24h &amp; 5j inactives &rarr; tickets orphelins</div></li>
             <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>CSAT inactive</strong><br><span style="font-size:11px;color:#6B7280">Z&eacute;ro donn&eacute;e de satisfaction depuis novembre 2023</span></div></li>
           </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Triggers</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Doublons de triggers</strong><br><span style="font-size:11px;color:#6B7280">3 versions actives de "Notifier le demandeur de la r&eacute;ception" &mdash; risque d'emails multiples</span></div></li>
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>11 triggers inactifs &agrave; examiner et nettoyer</div></li>
-          </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">SLA</div>
-          <ul class="checklist">
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">SLA</div>
+          <ul class="checklist" style="margin-bottom:10px">
             <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Aucune politique SLA configur&eacute;e</strong><br><span style="font-size:11px;color:#6B7280">Pas de mesure des d&eacute;lais, pas d'alertes, pas de reporting performance</span></div></li>
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Horaires d'ouverture OK &mdash; pr&ecirc;ts &agrave; &ecirc;tre li&eacute;s aux politiques SLA</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Macros</div>
+          <ul class="checklist">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Param&egrave;tres de langue incorrects</strong><br><span style="font-size:11px;color:#6B7280">Contenu Dynamique non utilis&eacute; &mdash; macros dupliqu&eacute;es FR/EN au lieu d'une seule macro multilingue</span></div></li>
           </ul>
         </div>
       </div>
 
-      <!-- COLONNE 3 : Gestion & Qualite -->
+      <!-- COLONNE 3 : Gestion & Qualité -->
       <div style="display:flex;flex-direction:column;gap:0">
         <div style="background:linear-gradient(135deg,#EC4899,#F97316);border-radius:12px 12px 0 0;padding:14px 16px">
           <div style="font-size:15px;font-weight:800;color:white">&#128200; Gestion &amp; Qualit&eacute; Op&eacute;rationnelle</div>
         </div>
         <div style="background:white;border-radius:0 0 12px 12px;border:1px solid #E5E7EB;border-top:none;padding:14px 16px;flex:1">
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Explore &amp; Reporting</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Pas de dashboard personnalis&eacute; SLA / CSAT / volume par groupe</div></li>
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Time Tracking absent &mdash; impossible de mesurer le temps de traitement r&eacute;el</div></li>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Explore &amp; Reporting</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Pas de dashboard personnalis&eacute; bas&eacute; sur les champs et statuts custom</div></li>
           </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Base de connaissances</div>
-          <ul class="checklist" style="margin-bottom:12px">
-            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>8 articles seulement, 0 label</strong><br><span style="font-size:11px;color:#6B7280">Pour un fabricant avec des dizaines de gammes produits, le Help Center est quasiment vide</span></div></li>
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Structure de cat&eacute;gories en place (G&eacute;n&eacute;ral / Particuliers / Pro) &mdash; bonne base &agrave; alimenter</div></li>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Base de connaissances</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EF4444;font-size:13px">&#11044;</span><div><strong>Pas de labels sur les articles FAQ</strong><br><span style="font-size:11px;color:#6B7280">Indispensable pour que l'IA fonctionne correctement</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Th&egrave;me Help Center basique &mdash; non personnalis&eacute; aux couleurs Airwell</div></li>
           </ul>
-          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Points forts confirm&eacute;s</div>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Applications</div>
+          <ul class="checklist" style="margin-bottom:10px">
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div>Application Time Tracking absente &mdash; impossible de mesurer le temps par ticket</div></li>
+          </ul>
+          <div style="font-size:11px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Statuts</div>
           <ul class="checklist">
-            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Macros dupliqu&eacute;es FR/EN au lieu du Contenu Dynamique</strong><br><span style="font-size:11px;color:#6B7280">Structure "::" bonne, mais chaque macro existe en deux versions. Le Contenu Dynamique Zendesk r&eacute;duirait de moiti&eacute; le nombre de macros &agrave; maintenir</span></div></li>
-            <li><span style="color:#22C55E;font-size:13px">&#11044;</span><div><strong>10 formulaires sp&eacute;cialis&eacute;s</strong><br><span style="font-size:11px;color:#6B7280">Bonne collecte de donn&eacute;es &agrave; l'entr&eacute;e des tickets</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Statut On-hold inactif</strong><br><span style="font-size:11px;color:#6B7280">&Agrave; activer au niveau du compte</span></div></li>
+            <li><span style="color:#EAB308;font-size:13px">&#11044;</span><div><strong>Process SAV en "En attente" (Pending) &mdash; statut incorrect</strong><br><span style="font-size:11px;color:#6B7280">Quand le blocage est c&ocirc;t&eacute; entreprise, le statut correct est On-hold. Des contournements existent pour mesurer les d&eacute;lais par statut &mdash; &agrave; discuter selon le workflow</span></div></li>
           </ul>
         </div>
       </div>
