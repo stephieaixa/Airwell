@@ -270,6 +270,15 @@
   .slide-body.compact p                 { font-size: 11px; line-height: 1.4; }
   .slide-body.compact h4                { font-size: 12px; }
 
+  .slide-merci {
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 56px;
+    padding-bottom: calc(var(--nav-h) + 32px);
+  }
+
   @media (max-width: 768px) {
     :root { --nav-h: 52px; }
     .slide-body { overflow-y: auto !important; padding: 14px 16px calc(var(--nav-h) + 14px) !important; font-size: 12px; overscroll-behavior: contain; }
@@ -814,90 +823,62 @@
   <div class="slide-header">
     <div class="header-left">
       <div class="omycare-logo"><img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:30px"></div>
-      <h2>&#128203; Plan d'action prioris&eacute;</h2>
+      <h2>&#128203; Plan d'action</h2>
     </div>
-    <span class="tag">Semaine 1 &rarr; Trimestre 1</span>
+    <span class="tag">Aujourd'hui &rarr; Ce mois</span>
   </div>
-  <div class="slide-body compact" style="padding:12px 20px">
-    <div class="plan-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px 28px">
+  <div class="slide-body compact" style="padding:16px 28px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
 
-      <!-- S1 -->
+      <!-- AUJOURD'HUI -->
       <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
-        <div style="background:var(--red);padding:8px 14px;display:flex;align-items:center;gap:10px">
-          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">S1</div>
-          <div>
-            <div style="color:white;font-weight:700;font-size:13px">Semaine 1 &mdash; Actions critiques</div>
-            <div style="color:rgba(255,255,255,0.7);font-size:11px">Moins de 2h &mdash; impact imm&eacute;diat</div>
-          </div>
+        <div style="background:var(--red);padding:10px 16px">
+          <div style="color:white;font-weight:800;font-size:14px">&#128308; Aujourd'hui</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:11px">Corrections imm&eacute;diates</div>
         </div>
-        <div style="padding:8px 12px">
+        <div style="padding:10px 14px">
           <ul class="checklist" style="gap:0">
-            <li><span class="ico">&#9744;</span><div>Activer la <strong>relance pending 24h</strong> (inactif depuis la cr&eacute;ation)</div></li>
-            <li><span class="ico">&#9744;</span><div>Activer la <strong>relance pending 5 jours</strong></div></li>
-            <li><span class="ico">&#9744;</span><div>Activer la <strong>CSAT</strong> dans Admin &gt; Compte &gt; Satisfaction client</div></li>
-            <li><span class="ico">&#9744;</span><div>Ajouter des <strong>labels aux 8 articles</strong> existants</div></li>
-            <li><span class="ico">&#9744;</span><div>Cr&eacute;er la <strong>premi&egrave;re politique SLA</strong> (first reply + r&eacute;solution)</div></li>
-            <li><span class="ico">&#9744;</span><div>Supprimer ou archiver le <strong>formulaire de ticket inactif</strong> (copie SVI)</div></li>
+            <li><span class="ico">&#9744;</span>Activer la CSAT</li>
+            <li><span class="ico">&#9744;</span>Activer les relances pending (24h &amp; 5j)</li>
+            <li><span class="ico">&#9744;</span>Corriger le trigger Service Client DE</li>
+            <li><span class="ico">&#9744;</span>Supprimer le footer Zendesk du template email</li>
+            <li><span class="ico">&#9744;</span>Archiver le formulaire inactif (copie SVI)</li>
           </ul>
         </div>
       </div>
 
-      <!-- S2 -->
+      <!-- CETTE SEMAINE -->
       <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
-        <div style="background:#EAB308;padding:8px 14px;display:flex;align-items:center;gap:10px">
-          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">S2</div>
-          <div>
-            <div style="color:white;font-weight:700;font-size:13px">Semaine 2 &mdash; Haute priorit&eacute;</div>
-            <div style="color:rgba(255,255,255,0.7);font-size:11px">2 &agrave; 4h &mdash; organisation et nettoyage</div>
-          </div>
+        <div style="background:#EAB308;padding:10px 16px">
+          <div style="color:white;font-weight:800;font-size:14px">&#128993; Cette semaine</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:11px">Organisation &amp; nettoyage</div>
         </div>
-        <div style="padding:8px 12px">
+        <div style="padding:10px 14px">
           <ul class="checklist" style="gap:0">
-            <li><span class="ico">&#9744;</span><div>Structurer les <strong>vues en dossiers</strong> avec pr&eacute;fixe "::" (SAV FR, Export, Italie...)</div></li>
-            <li><span class="ico">&#9744;</span><div>Supprimer les <strong>12 vues inactives</strong> par d&eacute;faut Zendesk</div></li>
-            <li><span class="ico">&#9744;</span><div>Auditer les <strong>triggers en doublons</strong> (3 versions "Notifier demandeur")</div></li>
-            <li><span class="ico">&#9744;</span><div>Examiner les <strong>11 triggers inactifs</strong> et supprimer les obsol&egrave;tes</div></li>
-            <li><span class="ico">&#9744;</span><div>Lier les <strong>politiques SLA &agrave; l'horaire d'ouverture</strong> existant</div></li>
+            <li><span class="ico">&#9744;</span>Cr&eacute;er la politique SLA et la lier aux horaires</li>
+            <li><span class="ico">&#9744;</span>Ajouter des labels aux 8 articles existants</li>
+            <li><span class="ico">&#9744;</span>Organiser les vues en dossiers ("::")</li>
+            <li><span class="ico">&#9744;</span>Supprimer les 12 vues inactives Zendesk</li>
+            <li><span class="ico">&#9744;</span>Corriger le trigger #21912845082385</li>
+            <li><span class="ico">&#9744;</span>Configurer le DKIM sur le domaine Airwell</li>
           </ul>
         </div>
       </div>
 
-      <!-- M1 -->
+      <!-- CE MOIS -->
       <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
-        <div style="background:#B45309;padding:8px 14px;display:flex;align-items:center;gap:10px">
-          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">M1</div>
-          <div>
-            <div style="color:white;font-weight:700;font-size:13px">Mois 1 &mdash; Am&eacute;liorations importantes</div>
-            <div style="color:rgba(255,255,255,0.7);font-size:11px">1 journ&eacute;e &mdash; base de connaissance et champs</div>
-          </div>
+        <div style="background:var(--brand-accent);padding:10px 16px">
+          <div style="color:white;font-weight:800;font-size:14px">&#128203; Ce mois</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:11px">Am&eacute;liorations durables</div>
         </div>
-        <div style="padding:8px 12px">
+        <div style="padding:10px 14px">
           <ul class="checklist" style="gap:0">
-            <li><span class="ico">&#9744;</span><div>Cr&eacute;er <strong>20+ articles Help Center</strong> sur les sujets fr&eacute;quents (codes erreur, garantie, AIRHOME)</div></li>
-            <li><span class="ico">&#9744;</span><div>Configurer l'<strong>Agent IA</strong> sur les canaux avec les articles labellisés</div></li>
-            <li><span class="ico">&#9744;</span><div>Auditer et <strong>consolider les 156 champs</strong> (supprimer doublons FR/EN)</div></li>
-            <li><span class="ico">&#9744;</span><div>Archiver les <strong>macros inactives</strong> (&asymp;20) et d&eacute;finir un cycle de revue annuel</div></li>
-            <li><span class="ico">&#9744;</span><div>Cr&eacute;er une automation <strong>CSAT mauvaise note</strong> : r&eacute;ouverture + notification manager</div></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- T1 -->
-      <div style="background:white;border-radius:12px;border:1px solid #E5E7EB;overflow:hidden">
-        <div style="background:var(--brand-accent);padding:8px 14px;display:flex;align-items:center;gap:10px">
-          <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:13px;flex-shrink:0">T1</div>
-          <div>
-            <div style="color:white;font-weight:700;font-size:13px">Trimestre 1 &mdash; Strat&eacute;gique</div>
-            <div style="color:rgba(255,255,255,0.7);font-size:11px">Automatisation avanc&eacute;e et reporting</div>
-          </div>
-        </div>
-        <div style="padding:8px 12px">
-          <ul class="checklist" style="gap:0">
-            <li><span class="ico">&#9744;</span><div>Activer le <strong>routing omnicanal</strong> + skill-based routing par zone g&eacute;ographique</div></li>
-            <li><span class="ico">&#9744;</span><div>Cr&eacute;er un <strong>dashboard Explore</strong> SLA + CSAT + volume par groupe</div></li>
-            <li><span class="ico">&#9744;</span><div>Installer <strong>Time Tracking</strong> pour mesurer le temps de traitement par ticket</div></li>
-            <li><span class="ico">&#9744;</span><div>&Eacute;valuer l'ajout d'un <strong>canal WhatsApp</strong> pour les demandes SAV</div></li>
-            <li><span class="ico">&#9744;</span><div>D&eacute;ployer le Help Center <strong>en anglais</strong> pour les clients Export / DE / IT</div></li>
+            <li><span class="ico">&#9744;</span>Enregistrer les recommandations Copilot</li>
+            <li><span class="ico">&#9744;</span>Activer les champs conditionnels dans les formulaires</li>
+            <li><span class="ico">&#9744;</span>Consolider les triggers par langue &rarr; Contenu Dynamique</li>
+            <li><span class="ico">&#9744;</span>Cr&eacute;er 10+ articles Help Center avec labels</li>
+            <li><span class="ico">&#9744;</span>Installer Time Tracking</li>
+            <li><span class="ico">&#9744;</span>Activer le statut On-hold</li>
           </ul>
         </div>
       </div>
@@ -1091,7 +1072,7 @@
 </div>
 
 <!-- SLIDE 12 — MERCI -->
-<div class="slide slide-cover slide-merci" style="background: linear-gradient(135deg, #0F0A1E 0%, #1a0a35 40%, #2d1060 100%);">
+<div class="slide slide-cover slide-merci" style="background: linear-gradient(135deg, #0F0A1E 0%, #1a0a35 40%, #2d1060 100%); overflow-y: auto; padding-bottom: calc(var(--nav-h) + 32px);">
   <div class="cover-logo omycare-logo">
     <img src="Omycarelogosinfondo.png" alt="OmyCare" style="height:34px">
   </div>
